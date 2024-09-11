@@ -1,0 +1,106 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import scipy.spatial.distance as dist
+%matplotlib inline
+plt.style.use('ggplot')
+
+# Load Course Numerical Dataset
+file_path = r'C:\Users\jwhit\OneDrive\Documents\Data Science Course\Euclidean & Manhattan Distances\distance_dataset.csv'
+df = pd.read_csv(file_path, index_col=0)
+
+# Inspect the dataset
+print(df.info())  
+print(df.isnull().sum()) 
+print(df.head()) 
+
+# Euclidean distance to reference point (5,5) in the Y-Z plane
+distEuclid_5_5 = np.sqrt((df.Z - 5)**2 + (df.Y - 5)**2)
+
+# Euclidean distance to reference point (3,3) in the Y-Z plane
+distEuclid_3_3 = np.sqrt((df.Z - 3)**2 + (df.Y - 3)**2)
+
+# Plotting Euclidean distances for reference point (5,5)
+figEuclid = plt.figure(figsize=[10,8])
+plt.scatter(df.Y - 5, df.Z - 5, c=distEuclid_5_5, s=20)
+plt.ylim([-4.9, 4.9])
+plt.xlim([-4.9, 4.9])
+plt.xlabel('Y - 5', size=14)
+plt.ylabel('Z - 5', size=14)
+plt.title('Euclidean Distance from (5,5)')
+cb = plt.colorbar()
+cb.set_label('Distance from (5,5)', size=14)
+
+# Save the plot for Euclidean distance from (5,5)
+figEuclid.savefig(r'C:\Users\jwhit\OneDrive\Documents\Data Science Course\Euclidean & Manhattan Distances\Euclidean.png')
+
+# Plotting Euclidean distances for reference point (3,3)
+figEuclid_3_3 = plt.figure(figsize=[10,8])
+plt.scatter(df.Y - 3, df.Z - 3, c=distEuclid_3_3, s=20)
+plt.ylim([-4.9, 4.9])
+plt.xlim([-4.9, 4.9])
+plt.xlabel('Y - 3', size=14)
+plt.ylabel('Z - 3', size=14)
+plt.title('Euclidean Distance from (3,3)')
+cb = plt.colorbar()
+cb.set_label('Distance from (3,3)', size=14)
+
+# Save the plot for Euclidean distance from (3,3)
+figEuclid_3_3.savefig(r'C:\Users\jwhit\OneDrive\Documents\Data Science Course\Euclidean & Manhattan Distances\distance-comparison.png')
+
+# Manhattan distance to reference point (5,5) in the X-Z plane
+distManhattan_5_5 = np.abs(df.X - 5) + np.abs(df.Z - 5)
+
+# Manhattan distance to reference point (4,4) in the X-Z plane
+distManhattan_4_4 = np.abs(df.X - 4) + np.abs(df.Z - 4)
+
+# Plotting Manhattan distances for reference point (5,5)
+figManhattan = plt.figure(figsize=[10,8])
+plt.scatter(df.X - 5, df.Z - 5, c=distManhattan_5_5, s=20)
+plt.ylim([-4.9, 4.9])
+plt.xlim([-4.9, 4.9])
+plt.xlabel('X - 5', size=14)
+plt.ylabel('Z - 5', size=14)
+plt.title('Manhattan Distance from (5,5)')
+cb = plt.colorbar()
+cb.set_label('Distance from (5,5)', size=14)
+
+# Save the plot for Manhattan distance from (5,5)
+figManhattan.savefig(r'C:\Users\jwhit\OneDrive\Documents\Data Science Course\Euclidean & Manhattan Distances\manhattan.png')
+
+# Plotting Manhattan distances for reference point (4,4)
+figManhattan_4_4 = plt.figure(figsize=[10,8])
+plt.scatter(df.X - 4, df.Z - 4, c=distManhattan_4_4, s=20)
+plt.ylim([-4.9, 4.9])
+plt.xlim([-4.9, 4.9])
+plt.xlabel('X - 4', size=14)
+plt.ylabel('Z - 4', size=14)
+plt.title('Manhattan Distance from (4,4)')
+cb = plt.colorbar()
+cb.set_label('Distance from (4,4)', size=14)
+
+# Save the plot for Manhattan distance from (4,4)
+figManhattan_4_4.savefig(r'C:\Users\jwhit\OneDrive\Documents\Data Science Course\Euclidean & Manhattan Distances\distance-comparison.png')
+
+# Using scipy.spatial.distance to compute distance matrices
+mat = df[['X', 'Y', 'Z']].to_numpy()
+
+# Pairwise Euclidean distance matrix
+DistEuclid = dist.pdist(mat, 'euclidean')
+
+# Pairwise Manhattan (city block) distance matrix
+DistManhattan = dist.pdist(mat, 'cityblock')
+
+# Generate a random matrix for further distance comparison
+largeMat = np.random.random((10000, 100))
+
+# Plot histograms of Euclidean and Manhattan distance matrices for comparison
+plt.figure(figsize=(10, 6))
+plt.hist(DistEuclid, bins=50, alpha=0.5, label='Euclidean Distances')
+plt.hist(DistManhattan, bins=50, alpha=0.5, label='Manhattan Distances')
+plt.title('Histogram of Distance Matrices')
+plt.xlabel('Distance')
+plt.ylabel('Frequency')
+plt.legend()
+plt.show()
